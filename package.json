@@ -30,7 +30,7 @@
     "prettier": "^2.0.5"
   },
   "scripts": {
-    "start": "env-cmd -f ./config/prod.env node dist/index.js",
+    "start": "node dist/index.js",
     "heroku-postbuild": "babel src --out-dir dist --copy-files",
     "start:dev": "env-cmd -f ./config/dev.env nodemon src/index.js --exec babel-node -e js,gql --ignore 'schema.gql'",
     "get-schema": "graphql get-schema -p prisma"
