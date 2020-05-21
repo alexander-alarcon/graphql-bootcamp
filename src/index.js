@@ -1,21 +1,5 @@
-import { GraphQLServer } from 'graphql-yoga';
-
-import resolvers, { fragmentReplacements } from './graphql/resolvers';
-import typeDefs from './graphql/types';
 import logger from './utils/logger';
-import prisma from './prisma';
-
-const server = new GraphQLServer({
-  typeDefs,
-  resolvers,
-  context(request) {
-    return {
-      prisma,
-      request,
-    };
-  },
-  fragmentReplacements,
-});
+import server from './server';
 
 server.start(
   {
