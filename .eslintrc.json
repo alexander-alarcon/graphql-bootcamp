@@ -16,5 +16,5 @@
   "rules": {
     "prettier/prettier": "error"
   },
-  "ignorePatterns": ["dist/"]
+  "ignorePatterns": ["dist/", "test/"]
 }
