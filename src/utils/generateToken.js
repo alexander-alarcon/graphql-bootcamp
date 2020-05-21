@@ -1,7 +1,7 @@
 import { sign } from 'jsonwebtoken';
 
 function generateToken(userId) {
-  return sign({ userId }, 'SuperSecret', {
+  return sign({ userId }, process.env.JWT_SECRET, {
     expiresIn: '7d',
   });
 }

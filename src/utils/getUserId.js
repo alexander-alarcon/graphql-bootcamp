@@ -14,7 +14,7 @@ async function getUserId(request, requiredAuth = true) {
 
     if (header) {
       const token = header.replace('Bearer ', '');
-      const { userId } = await verify(token, 'SuperSecret');
+      const { userId } = await verify(token, process.env.JWT_SECRET);
       return userId;
     }
 
