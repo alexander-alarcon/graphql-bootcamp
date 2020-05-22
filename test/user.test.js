@@ -4,10 +4,10 @@ import { PORT } from './utils/constants';
 import prisma from '../src/prisma';
 import server from '../src/server';
 
-import { getUsers, createUser } from './utils/users';
+import { getUsers, createUser, login } from './utils/users';
 import { getPosts } from './utils/posts';
 
-beforeEach(async () => {
+beforeAll(async () => {
   await prisma.mutation.deleteManyUsers();
   await prisma.mutation.deleteManyPosts();
   const user = await prisma.mutation.createUser({
@@ -58,14 +58,46 @@ describe('User related tests', () => {
     expect(userExists).toBe(true);
   });
 
+  test('Should not create user', async () => {
+    const user = {
+      name: 'goku',
+      email: 'goku@example.com',
+      password: '123456789',
+    };
+
+    await expect(
+      createUser(user.name, user.email, user.password)
+    ).rejects.toThrow();
+  });
+
   test('Should expose public author profiles', async () => {
     const users = await getUsers();
-    expect(users.length).toBe(1);
+    expect(users.length).toBe(2);
     expect(users[0].email).toBeNull();
     expect(users[0].name).toBe('pepe');
   });
 
-  test('Should not login with bad credentials', async () => {});
+  test('Should not login with bad credentials', async () => {
+    const badCredentials = {
+      email: 'pepe@example.com',
+      password: '987654321',
+    };
+
+    await expect(
+      login(badCredentials.email, badCredentials.password)
+    ).rejects.toThrow();
+  });
+
+  test('Should login conrrectly', async () => {
+    const credentials = {
+      email: 'pepe@example.com',
+      password: '123456789',
+    };
+
+    const loginResponse = await login(credentials.email, credentials.password);
+
+    expect(loginResponse).toHaveProperty('token');
+  });
 });
 
 describe('Post related tests', () => {

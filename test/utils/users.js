@@ -35,4 +35,26 @@ async function createUser(name, email, password) {
   return createUser.data.createUser;
 }
 
-export { getUsers, createUser };
+async function login(email, password) {
+  const mutation = `
+    mutation {
+      login(
+        data: {
+          email: "${email}"
+          password: "${password}"
+        }
+      ) {
+        user{
+          id
+          name
+          email
+        }
+        token
+      }
+    }
+  `;
+  const loginResponse = await request(mutation);
+  return loginResponse.data.login;
+}
+
+export { getUsers, createUser, login };
