@@ -1,42 +1,11 @@
 import { getFirstname, isValidPassword } from '../src/utils/user';
-import hashPassword from '../src/utils/hashPassword';
-import { PORT } from './utils/constants';
+import seed from './utils/seedDatabase';
 import prisma from '../src/prisma';
-import server from '../src/server';
 
 import { getUsers, createUser, login } from './utils/users';
-import { getPosts } from './utils/posts';
 
 beforeAll(async () => {
-  await prisma.mutation.deleteManyUsers();
-  await prisma.mutation.deleteManyPosts();
-  const user = await prisma.mutation.createUser({
-    data: {
-      name: 'pepe',
-      email: 'pepe@example.com',
-      password: await hashPassword('123456789'),
-    },
-  });
-  await prisma.mutation.createPost({
-    data: {
-      title: 'Post 1',
-      body: 'Lorem Post',
-      isPublished: true,
-      author: {
-        connect: { id: user.id },
-      },
-    },
-  });
-  await prisma.mutation.createPost({
-    data: {
-      title: 'Post 2',
-      body: 'Lorem Post',
-      isPublished: false,
-      author: {
-        connect: { id: user.id },
-      },
-    },
-  });
+  await seed();
 });
 
 describe('User related tests', () => {
@@ -97,15 +66,5 @@ describe('User related tests', () => {
     const loginResponse = await login(credentials.email, credentials.password);
 
     expect(loginResponse).toHaveProperty('token');
-  });
-});
-
-describe('Post related tests', () => {
-  test('Should expose just published posts', async () => {
-    const posts = await getPosts();
-    expect(posts.length).toBe(1);
-    expect(posts[0].isPublished).toBe(true);
-    expect(posts[0].author.name).toBe('pepe');
-    expect(posts[0].author.email).toBeNull();
   });
 });
