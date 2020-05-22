@@ -1,28 +1,13 @@
 import { getFirstname, isValidPassword } from '../src/utils/user';
+import { PORT } from './utils/constants';
 import prisma from '../src/prisma';
 import server from '../src/server';
 
 import { getUsers, createUser } from './utils/users';
 
-const PORT = process.env.PORT || 4001;
+beforeAll(async () => {});
 
-beforeAll(async () => {
-  global.__SERVER__ = await server.start(
-    {
-      port: PORT,
-      endpoint: '/gql',
-    },
-    ({ port }) => {
-      console.log('Server is running ' + port);
-    }
-  );
-});
-
-afterAll(async () => {
-  if (global.__SERVER__.close) {
-    global.__SERVER__.close();
-  }
-});
+afterAll(async () => {});
 
 describe('User related tests', () => {
   test('Should get users', async () => {
