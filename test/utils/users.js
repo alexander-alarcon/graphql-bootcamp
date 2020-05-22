@@ -9,7 +9,7 @@ async function getUsers() {
         email
       }
     }`);
-  return users;
+  return users.data.users;
 }
 
 async function createUser(name, email, password) {
@@ -32,7 +32,7 @@ async function createUser(name, email, password) {
     }
   `;
   const createUser = await request(mutation);
-  return createUser;
+  return createUser.data.createUser;
 }
 
 export { getUsers, createUser };
