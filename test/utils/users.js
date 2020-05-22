@@ -1,14 +1,17 @@
 import request from './request';
 
-async function getUsers() {
-  const users = await request(`
+async function getUsers(headers) {
+  const users = await request(
+    `
     query { 
       users { 
         id
         name
         email
       }
-    }`);
+    }`,
+    headers
+  );
   return users.data.users;
 }
 
@@ -57,4 +60,19 @@ async function login(email, password) {
   return loginResponse.data.login;
 }
 
-export { getUsers, createUser, login };
+async function getProfile(headers) {
+  const profile = await request(
+    `
+    query { 
+      me { 
+        id
+        name
+        email
+      }
+    }`,
+    headers
+  );
+  return profile.data.me;
+}
+
+export { getUsers, createUser, login, getProfile };

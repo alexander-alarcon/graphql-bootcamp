@@ -1,8 +1,7 @@
+import { getUsers, createUser, login, getProfile } from './utils/users';
 import { getFirstname, isValidPassword } from '../src/utils/user';
-import seed from './utils/seedDatabase';
+import seed, { userOne } from './utils/seedDatabase';
 import prisma from '../src/prisma';
-
-import { getUsers, createUser, login } from './utils/users';
 
 beforeAll(async () => {
   await seed();
@@ -66,5 +65,26 @@ describe('User related tests', () => {
     const loginResponse = await login(credentials.email, credentials.password);
 
     expect(loginResponse).toHaveProperty('token');
+  });
+
+  test('Should expose private author profile', async () => {
+    const users = await getUsers({ Authorization: userOne.jwt });
+    expect(users.length).toBe(2);
+    expect(users[0].email).toBe('pepe@example.com');
+    expect(users[0].name).toBe('pepe');
+    expect(users[1].email).toBeNull();
+    expect(users[1].name).toBe('goku');
+  });
+
+  test('Should show all profile data when auth', async () => {
+    const profileData = await getProfile({ Authorization: userOne.jwt });
+
+    expect(profileData.id).toBe(userOne.user.id);
+    expect(profileData.name).toBe(userOne.user.name);
+    expect(profileData.email).toBe(userOne.user.email);
+  });
+
+  test('Should fail if not auth when try to get profile', async () => {
+    await expect(getProfile()).rejects.toThrow();
   });
 });
