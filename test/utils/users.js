@@ -1,6 +1,6 @@
 import request from './request';
 
-async function getUsers(headers) {
+async function getUsers(isAuth = false, token = null) {
   const users = await request(
     `
     query { 
@@ -10,7 +10,8 @@ async function getUsers(headers) {
         email
       }
     }`,
-    headers
+    isAuth,
+    token
   );
   return users.data.users;
 }

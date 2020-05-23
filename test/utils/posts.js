@@ -17,4 +17,21 @@ async function getPosts() {
   return posts.data.posts;
 }
 
-export { getPosts };
+async function getMyPosts(isAuth, token) {
+  const posts = await request(
+    `
+    query { 
+      myPosts { 
+        id
+        title
+        isPublished
+      }
+    }`,
+    isAuth,
+    token
+  );
+
+  return posts.data.myPosts;
+}
+
+export { getPosts, getMyPosts };

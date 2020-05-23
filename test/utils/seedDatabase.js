@@ -1,8 +1,10 @@
-import generateToken from '../../src/utils/generateToken';
-import prisma from '../../src/prisma';
 import { hashSync } from 'bcrypt';
 
-const userOne = {
+import generateToken from '../../src/utils/generateToken';
+import prisma from '../../src/prisma';
+import store from './store';
+
+let userOne = {
   input: {
     name: 'pepe',
     email: 'pepe@example.com',
@@ -13,19 +15,23 @@ const userOne = {
 };
 
 async function seed() {
+  const newUser = { ...userOne };
   await prisma.mutation.deleteManyUsers();
   await prisma.mutation.deleteManyPosts();
-  userOne.user = await prisma.mutation.createUser({
+  newUser.user = await prisma.mutation.createUser({
     data: userOne.input,
   });
-  userOne.jwt = await generateToken(userOne.user.id);
+  newUser.jwt = await generateToken(newUser.user.id);
+
+  store.setItem('user', JSON.stringify(newUser));
+
   await prisma.mutation.createPost({
     data: {
       title: 'Post 1',
       body: 'Lorem Post',
       isPublished: true,
       author: {
-        connect: { id: userOne.user.id },
+        connect: { id: newUser.user.id },
       },
     },
   });
@@ -35,10 +41,10 @@ async function seed() {
       body: 'Lorem Post',
       isPublished: false,
       author: {
-        connect: { id: userOne.user.id },
+        connect: { id: newUser.user.id },
       },
     },
   });
 }
 
-export { seed as default, userOne };
+export { seed as default };
