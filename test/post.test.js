@@ -1,10 +1,17 @@
-import { getPosts, getMyPosts, createPost, updateMyPost } from './utils/posts';
+import {
+  getPosts,
+  getMyPosts,
+  createPost,
+  updateMyPost,
+  deleteMyPost,
+} from './utils/posts';
 import prisma from '../src/prisma';
 import store from './utils/store';
 
 describe('Post related tests', () => {
   const user = JSON.parse(store.getItem('user'));
   const post = JSON.parse(store.getItem('post'));
+  const post2 = JSON.parse(store.getItem('post2'));
 
   test('Should expose just published posts', async () => {
     const posts = await getPosts();
@@ -54,5 +61,12 @@ describe('Post related tests', () => {
     });
     expect(newPost).toHaveProperty('id');
     expect(exists).toBe(true);
+  });
+
+  test('Should be able to delete own post', async () => {
+    const deletePost = await deleteMyPost(post2.post.id, true, user.jwt);
+    const exists = await prisma.exists.Post({ id: post2.post.id });
+
+    expect(exists).toBe(false);
   });
 });

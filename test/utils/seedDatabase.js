@@ -23,9 +23,19 @@ const post = {
   post: undefined,
 };
 
+const post2 = {
+  input: {
+    title: 'Post 2',
+    body: 'Lorem Post',
+    isPublished: false,
+  },
+  post: undefined,
+};
+
 async function seed() {
   const newUser = { ...user };
   const newPost = { ...post };
+  const newPost2 = { ...post2 };
   await prisma.mutation.deleteManyUsers();
   await prisma.mutation.deleteManyPosts();
   newUser.user = await prisma.mutation.createUser({
@@ -43,11 +53,9 @@ async function seed() {
       },
     },
   });
-  await prisma.mutation.createPost({
+  newPost2.post = await prisma.mutation.createPost({
     data: {
-      title: 'Post 2',
-      body: 'Lorem Post',
-      isPublished: false,
+      ...post2.input,
       author: {
         connect: { id: newUser.user.id },
       },
@@ -55,6 +63,7 @@ async function seed() {
   });
 
   store.setItem('post', JSON.stringify(newPost));
+  store.setItem('post2', JSON.stringify(newPost2));
 }
 
 export { seed as default };

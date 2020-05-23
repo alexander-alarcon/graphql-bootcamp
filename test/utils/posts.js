@@ -81,4 +81,23 @@ async function updateMyPost(id, data, isAuth, token) {
   return updatedPost.data.updatePost;
 }
 
-export { getPosts, getMyPosts, createPost, updateMyPost };
+async function deleteMyPost(id, isAuth, token) {
+  const deletedPost = await request(
+    `
+    mutation {
+      deletePost(id: "${id}") {
+        id
+        title
+        body
+        isPublished
+      }
+    }
+  `,
+    isAuth,
+    token
+  );
+
+  return deletedPost.data.deletePost;
+}
+
+export { getPosts, getMyPosts, createPost, updateMyPost, deleteMyPost };
