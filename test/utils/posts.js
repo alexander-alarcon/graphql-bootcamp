@@ -34,4 +34,30 @@ async function getMyPosts(isAuth, token) {
   return posts.data.myPosts;
 }
 
-export { getPosts, getMyPosts };
+async function updateMyPost(id, data, isAuth, token) {
+  let payloadData = '';
+  for (let [key, value] of Object.entries(data)) {
+    if (typeof value === 'string') {
+      payloadData = `${key}: "${value}"`;
+    } else {
+      payloadData = `${key}: ${value}`;
+    }
+  }
+
+  const updatedPost = await request(
+    `
+    mutation { 
+      updatePost(id: "${id}", data: { ${payloadData} }) { 
+        id
+        title
+        body
+        isPublished
+      }
+    }`,
+    isAuth,
+    token
+  );
+  return updatedPost.data.updatePost;
+}
+
+export { getPosts, getMyPosts, updateMyPost };
