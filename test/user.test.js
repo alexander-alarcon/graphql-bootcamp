@@ -39,7 +39,7 @@ describe('User related tests', () => {
 
   test('Should expose public author profiles', async () => {
     const users = await getUsers();
-    expect(users.length).toBe(2);
+    expect(users.length).toBe(3);
     expect(users[0].email).toBeNull();
     expect(users[0].name).toBe('pepe');
   });
@@ -69,15 +69,15 @@ describe('User related tests', () => {
   test('Should expose private author profile', async () => {
     const users = await getUsers(true, userOne.jwt);
 
-    expect(users.length).toBe(2);
+    expect(users.length).toBe(3);
     expect(users[0].email).toBe('pepe@example.com');
     expect(users[0].name).toBe('pepe');
-    expect(users[1].email).toBeNull();
-    expect(users[1].name).toBe('goku');
+    expect(users[2].email).toBeNull();
+    expect(users[2].name).toBe('goku');
   });
 
-  /* test('Should show all profile data when auth', async () => {
-    const profileData = await getProfile(header);
+  test('Should show all profile data when auth', async () => {
+    const profileData = await getProfile(true, userOne.jwt);
 
     expect(profileData.id).toBe(userOne.user.id);
     expect(profileData.name).toBe(userOne.user.name);
@@ -86,5 +86,5 @@ describe('User related tests', () => {
 
   test('Should fail if not auth when try to get profile', async () => {
     await expect(getProfile()).rejects.toThrow();
-  }); */
+  });
 });

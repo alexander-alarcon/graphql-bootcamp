@@ -61,7 +61,7 @@ async function login(email, password) {
   return loginResponse.data.login;
 }
 
-async function getProfile(headers) {
+async function getProfile(isAuth, token) {
   const profile = await request(
     `
     query { 
@@ -71,7 +71,8 @@ async function getProfile(headers) {
         email
       }
     }`,
-    headers
+    isAuth,
+    token
   );
   return profile.data.me;
 }
