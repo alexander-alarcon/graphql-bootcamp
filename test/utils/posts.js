@@ -34,6 +34,27 @@ async function getMyPosts(isAuth, token) {
   return posts.data.myPosts;
 }
 
+async function createPost(data, isAuth, token) {
+  const mutation = `
+    mutation {
+      createPost(
+        data: {
+          title: "${data.title}"
+          body: "${data.body}"
+          isPublished: ${data.isPublished}
+        }
+      ) {
+        id
+        title
+        body
+        isPublished
+      }
+    }
+  `;
+  const newPost = await request(mutation, isAuth, token);
+  return newPost.data.createPost;
+}
+
 async function updateMyPost(id, data, isAuth, token) {
   let payloadData = '';
   for (let [key, value] of Object.entries(data)) {
@@ -60,4 +81,4 @@ async function updateMyPost(id, data, isAuth, token) {
   return updatedPost.data.updatePost;
 }
 
-export { getPosts, getMyPosts, updateMyPost };
+export { getPosts, getMyPosts, createPost, updateMyPost };

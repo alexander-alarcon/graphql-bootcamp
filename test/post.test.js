@@ -1,4 +1,4 @@
-import { getPosts, getMyPosts, updateMyPost } from './utils/posts';
+import { getPosts, getMyPosts, createPost, updateMyPost } from './utils/posts';
 import prisma from '../src/prisma';
 import store from './utils/store';
 
@@ -23,7 +23,7 @@ describe('Post related tests', () => {
   });
 
   test('Should be able to update own post', async () => {
-    const newPost = await updateMyPost(
+    const updatedPost = await updateMyPost(
       post.post.id,
       {
         isPublished: false,
@@ -37,7 +37,22 @@ describe('Post related tests', () => {
       isPublished: false,
     });
 
-    expect(newPost.isPublished).toBe(false);
+    expect(updatedPost.isPublished).toBe(false);
+    expect(exists).toBe(true);
+  });
+
+  test('Should be able to create a post', async () => {
+    const data = {
+      title: 'Testing post creation',
+      body: 'This is a test',
+      isPublished: true,
+    };
+
+    const newPost = await createPost(data, true, user.jwt);
+    const exists = await prisma.exists.Post({
+      id: newPost.id,
+    });
+    expect(newPost).toHaveProperty('id');
     expect(exists).toBe(true);
   });
 });
