@@ -10,7 +10,7 @@
     "graphql-cli": "2.16.4",
     "graphql-import": "^0.7.0",
     "graphql-yoga": "^1.18.3",
-    "jsonwebtoken": "^8.5.1",
+    "jsonwebtoken": "^9.0.0",
     "localstorage-ponyfill": "^1.0.2",
     "merge-graphql-schemas": "^1.7.8",
     "prisma-binding": "^2.3.16",
